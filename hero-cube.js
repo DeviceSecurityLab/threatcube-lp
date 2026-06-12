@@ -1,6 +1,6 @@
 // ============================================================
 // ThreatCube hero — interactive 3D threat cube
-// Asset (X) × Interface (Y) × STRIDE (Z), colored by risk level.
+// Asset (X) × Surface (Y) × STRIDE (Z), colored by risk level.
 // Auto-rotates; drag to orbit. Glow via UnrealBloom.
 // ============================================================
 import * as THREE from "three";

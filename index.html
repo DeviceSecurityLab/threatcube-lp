@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ThreatCube — Excelには映らない脅威を、立体で見る。</title>
-<meta name="description" content="Asset × Interface × STRIDE のリスクを回転する3Dキューブで可視化する、ローカルファーストの脅威モデリングワークスペース。" />
+<meta name="description" content="Asset × Surface × STRIDE のリスクを回転する3Dキューブで可視化する、ローカルファーストの脅威モデリングワークスペース。" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,7 +46,7 @@
       <span class="eyebrow">LOCAL-FIRST STRIDE THREAT MODELING</span>
       <h1>危険な脅威を、<br /><span class="grad">すぐに見つけ出す。</span></h1>
       <p class="lead">
-        STRIDE分析を Asset × Interface の立体に可視化。リスクの集中も、未分析の空白も明らかになり、
+        STRIDE分析を Asset × Surface の立体に可視化。リスクの集中も、未分析の空白も明らかになり、
         いま対処すべき重大な脅威を見つけ出せる ── 組込み・製品セキュリティのためのローカルファースト脅威モデリング。
       </p>
       <div class="hero-cta">
@@ -91,7 +91,7 @@
       <span class="eyebrow">THE PROBLEM</span>
       <h2>2Dのマトリクスでは、<br />構造が見えない。</h2>
       <p>
-        STRIDE分析は、Asset・Interface・脅威カテゴリ・リスクという複数の次元を持っています。
+        STRIDE分析は、Asset・Surface・脅威カテゴリ・リスクという複数の次元を持っています。
         スプレッドシートの平面に押し込めると、どこにリスクが集中し、どこがまだ分析されていないのかが、行と列の海に埋もれてしまいます。
       </p>
     </div>
@@ -148,7 +148,7 @@
       <div class="axis-card reveal" data-d="2">
         <div class="glowline"></div>
         <div class="axis-id">Y</div>
-        <h3>Interface</h3>
+        <h3>Surface</h3>
         <div class="jp">インターフェース / データフロー</div>
         <p>資産が外界と接する経路。USB更新・保守ツール・製造ライン・DICOM出力など。</p>
         <ul><li>usb</li><li>ci_cd</li><li>service_port</li><li>hl7_dicom</li></ul>
@@ -228,7 +228,7 @@
       <div class="feature-text">
         <div class="fnum">02 / TABLE VIEW</div>
         <h3>テーブルビュー</h3>
-        <p>3Dは発見のため、テーブルは作業のため。Asset・Interface・STRIDE・Risk・Statusの一覧で、効率的なレビューと一括編集を行えます。</p>
+        <p>3Dは発見のため、テーブルは作業のため。Asset・Surface・STRIDE・Risk・Statusの一覧で、効率的なレビューと一括編集を行えます。</p>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>列ソート・フィルタで対象を素早く絞り込み</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>3Dビューと同じデータをリアルタイムに共有</li>
@@ -239,7 +239,7 @@
         <div class="win-bar"><i></i><i></i><i></i></div>
         <div style="padding:6px 10px 12px;">
           <table class="mock-table">
-            <thead><tr><th>Asset</th><th>Interface</th><th>STRIDE</th><th>Risk</th></tr></thead>
+            <thead><tr><th>Asset</th><th>Surface</th><th>STRIDE</th><th>Risk</th></tr></thead>
             <tbody>
               <tr><td>Device key</td><td>Provisioning</td><td>Spoofing</td><td><span class="pill" style="color:var(--r-crit);background:rgba(217,70,239,0.12)">Critical</span></td></tr>
               <tr><td>FW package</td><td>USB update</td><td>Tampering</td><td><span class="pill" style="color:var(--r-crit);background:rgba(217,70,239,0.12)">Critical</span></td></tr>
@@ -351,7 +351,7 @@
   <div class="wrap">
     <div>
       <a class="brand" href="#top"><img src="favicon.svg" alt="" />Threat<b>Cube</b></a>
-      <p class="tagline">See threats Excel cannot show. Visualize Asset × Interface × STRIDE risk in 3D.</p>
+      <p class="tagline">See threats Excel cannot show. Visualize Asset × Surface × STRIDE risk in 3D.</p>
       <p class="stack">React · Three.js · Zustand · Dexie.js (IndexedDB) · Tailwind</p>
     </div>
     <div class="footer-cols">
