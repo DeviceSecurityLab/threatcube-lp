@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ThreatCube — Excelには映らない脅威を、立体で見る。</title>
+<meta name="description" content="Asset × Interface × STRIDE のリスクを回転する3Dキューブで可視化する、ローカルファーストの脅威モデリングワークスペース。" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <img src="favicon.svg" alt="" />
+      Threat<b>Cube</b>
+    </a>
+    <div class="nav-links">
+      <a href="#problem">課題</a>
+      <a href="#axes">3つの軸</a>
+      <a href="#features">機能</a>
+      <a href="#local">プライバシー</a>
+      <a href="#start" class="btn btn-ghost" style="padding:9px 16px;">ブラウザで開く</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="top">
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">LOCAL-FIRST STRIDE THREAT MODELING</span>
+      <h1>危険な脅威を、<br /><span class="grad">すぐに見つけ出す。</span></h1>
+      <p class="lead">
+        STRIDE分析を Asset × Interface の立体に可視化。リスクの集中も、未分析の空白も明らかになり、
+        いま対処すべき重大な脅威を見つけ出せる ── 組込み・製品セキュリティのためのローカルファースト脅威モデリング。
+      </p>
+      <div class="hero-cta">
+        <a href="#start" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+          3Dで試す
+        </a>
+        <a href="#axes" class="btn btn-ghost">コンセプトを見る</a>
+      </div>
+      <div class="hero-meta">
+        <span><i class="dot" style="background:var(--r-crit)"></i>CRITICAL</span>
+        <span><i class="dot" style="background:var(--r-high)"></i>HIGH</span>
+        <span><i class="dot" style="background:var(--r-med)"></i>MEDIUM</span>
+        <span><i class="dot" style="background:var(--r-low)"></i>LOW</span>
+        <span><i class="dot" style="background:var(--r-na)"></i>未評価</span>
+      </div>
+    </div>
+
+    <div class="cube-stage" id="cube-stage">
+      <canvas id="cube-canvas"></canvas>
+      <div class="drag-hint mono"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>ドラッグで回転</div>
+      <span class="axis-tag axis-x mono">ASSET →</span>
+      <span class="axis-tag axis-y mono">↑ STRIDE</span>
+      <span class="axis-tag axis-z mono">INTERFACE ↗</span>
+      <div class="cube-legend">
+        <span style="color:var(--r-crit)"><i style="background:var(--r-crit)"></i>Critical</span>
+        <span style="color:var(--r-high)"><i style="background:var(--r-high)"></i>High</span>
+        <span style="color:var(--r-med)"><i style="background:var(--r-med)"></i>Medium</span>
+        <span style="color:var(--r-low)"><i style="background:var(--r-low)"></i>Low</span>
+      </div>
+      <div class="cube-fallback mono">[ WebGL not available — 3D cube preview ]</div>
+    </div>
+  </div>
+</header>
+
+<hr class="rule" />
+
+<!-- ===================== PROBLEM ===================== -->
+<section class="block" id="problem">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">THE PROBLEM</span>
+      <h2>2Dのマトリクスでは、<br />構造が見えない。</h2>
+      <p>
+        STRIDE分析は、Asset・Interface・脅威カテゴリ・リスクという複数の次元を持っています。
+        スプレッドシートの平面に押し込めると、どこにリスクが集中し、どこがまだ分析されていないのかが、行と列の海に埋もれてしまいます。
+      </p>
+    </div>
+
+    <div class="compare">
+      <div class="compare-card before reveal" data-d="1">
+        <span class="tag">Before · Spreadsheet</span>
+        <h3>平らな表</h3>
+        <p>セルが何百行も並ぶだけ。ホットスポットも空白も、ひと目では分からない。</p>
+        <div class="flat-grid">
+          <i></i><i class="hot"></i><i></i><i></i><i class="hot"></i><i></i>
+          <i></i><i></i><i></i><i class="hot"></i><i></i><i></i>
+          <i class="hot"></i><i></i><i></i><i></i><i></i><i class="hot"></i>
+          <i></i><i></i><i class="hot"></i><i></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="compare-arrow reveal" data-d="2">→</div>
+      <div class="compare-card after reveal" data-d="3">
+        <span class="tag">After · ThreatCube</span>
+        <h3>立体の脅威キューブ</h3>
+        <p>リスクの集中・未分析の空白・状態の違いが、3次元の構造としてそのまま見える。</p>
+        <div class="flat-grid">
+          <i></i><i style="background:var(--r-high);box-shadow:0 0 10px var(--r-high)"></i><i></i><i style="background:var(--r-low)"></i><i style="background:var(--r-crit);box-shadow:0 0 10px var(--r-crit)"></i><i></i>
+          <i style="background:var(--r-med)"></i><i></i><i style="background:var(--r-low)"></i><i style="background:var(--r-high);box-shadow:0 0 10px var(--r-high)"></i><i></i><i style="background:var(--r-na)"></i>
+          <i style="background:var(--r-crit);box-shadow:0 0 10px var(--r-crit)"></i><i></i><i style="background:var(--r-med)"></i><i></i><i style="background:var(--r-low)"></i><i></i>
+          <i></i><i style="background:var(--r-high);box-shadow:0 0 10px var(--r-high)"></i><i></i><i style="background:var(--r-na)"></i><i></i><i style="background:var(--r-med)"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== AXES ===================== -->
+<section class="block" id="axes" style="background:var(--bg-2);border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">THREE DIMENSIONS</span>
+      <h2>1つの脅威を、<br />3つの軸で位置づける。</h2>
+      <p>
+        「どの資産が」「どのインターフェースを通じて」「どのSTRIDE脅威にさらされ」「どのリスクレベルなのか」。
+        ThreatCubeは、この4つの問いを1つの座標として表現します。
+      </p>
+    </div>
+
+    <div class="axes-grid">
+      <div class="axis-card reveal" data-d="1">
+        <div class="glowline"></div>
+        <div class="axis-id">X</div>
+        <h3>Asset</h3>
+        <div class="jp">資産</div>
+        <p>守るべき対象。鍵・証明書・ファームウェア・患者データ・較正値など。</p>
+        <ul><li>secret_key</li><li>firmware</li><li>certificate</li><li>clinical_data</li></ul>
+      </div>
+      <div class="axis-card reveal" data-d="2">
+        <div class="glowline"></div>
+        <div class="axis-id">Y</div>
+        <h3>Interface</h3>
+        <div class="jp">インターフェース / データフロー</div>
+        <p>資産が外界と接する経路。USB更新・保守ツール・製造ライン・DICOM出力など。</p>
+        <ul><li>usb</li><li>ci_cd</li><li>service_port</li><li>hl7_dicom</li></ul>
+      </div>
+      <div class="axis-card reveal" data-d="3">
+        <div class="glowline"></div>
+        <div class="axis-id">Z</div>
+        <h3>STRIDE</h3>
+        <div class="jp">脅威カテゴリ</div>
+        <p>6つの観点で網羅的に。資産×経路ごとに自動でセルを生成します。</p>
+        <ul><li>なりすまし</li><li>改ざん</li><li>否認</li><li>情報漏えい</li><li>DoS</li><li>権限昇格</li></ul>
+      </div>
+    </div>
+
+    <div class="encoding reveal" style="margin-top:34px;">
+      <span><b>色</b> = リスクレベル
+        <span class="swatch-row">
+          <i style="background:var(--r-na);color:var(--r-na)"></i>
+          <i style="background:var(--r-low);color:var(--r-low)"></i>
+          <i style="background:var(--r-med);color:var(--r-med)"></i>
+          <i style="background:var(--r-high);color:var(--r-high)"></i>
+          <i style="background:var(--r-crit);color:var(--r-crit)"></i>
+        </span>
+      </span>
+      <span><b>大きさ</b> = リスクスコア</span>
+      <span><b>不透明度 / 形状</b> = ステータス</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FEATURES ===================== -->
+<section class="block-tight" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">CORE WORKFLOW</span>
+      <h2>見る・直す・伝える。<br />3つのビューを行き来する。</h2>
+      <p>3Dキューブは「発見」のためのインターフェース。レビューと編集はテーブルで、共有はレポートで。役割の違う3つのビューが、ひとつのモデルを共有します。</p>
+    </div>
+
+    <!-- Feature 1: 3D Cube -->
+    <div class="feature reveal">
+      <div class="feature-text">
+        <div class="fnum">01 / CUBE VIEW</div>
+        <h3>3Dキューブビュー</h3>
+        <p>構造・ホットスポット・未分析セルをひと目で。回転・パン・ズームで全体を俯瞰し、気になるセルをクリックすればその場で脅威の詳細を編集できます。</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>回転 / パン / ズーム / カメラリセット</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>ホバーでツールチップ、クリックで編集パネル</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>軸ラベル・リスク・ステータスでフィルタ</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="win-bar"><i></i><i></i><i></i></div>
+        <div class="mock-cube">
+          <div class="mock-glow"></div>
+          <svg width="220" height="220" viewBox="0 0 220 220" style="position:relative">
+            <g stroke="#8b5cf6" stroke-opacity="0.35" stroke-width="1" fill="none">
+              <path d="M110 28 182 66 182 150 110 188 38 150 38 66z"/>
+              <path d="M110 28 110 188M38 66 182 150M182 66 38 150"/>
+            </g>
+            <g>
+              <rect x="86" y="70" width="22" height="22" rx="3" fill="#d946ef" opacity="0.95"><animate attributeName="opacity" values="0.7;1;0.7" dur="2.4s" repeatCount="indefinite"/></rect>
+              <rect x="120" y="92" width="16" height="16" rx="2" fill="#ef4444"/>
+              <rect x="70" y="104" width="14" height="14" rx="2" fill="#f59e0b"/>
+              <rect x="132" y="124" width="12" height="12" rx="2" fill="#22c55e"/>
+              <rect x="96" y="128" width="13" height="13" rx="2" fill="#ef4444"/>
+              <rect x="108" y="148" width="10" height="10" rx="2" fill="#9ca3af"/>
+              <rect x="78" y="138" width="11" height="11" rx="2" fill="#22c55e"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 2: Table -->
+    <div class="feature reveal">
+      <div class="feature-text">
+        <div class="fnum">02 / TABLE VIEW</div>
+        <h3>テーブルビュー</h3>
+        <p>3Dは発見のため、テーブルは作業のため。Asset・Interface・STRIDE・Risk・Statusの一覧で、効率的なレビューと一括編集を行えます。</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>列ソート・フィルタで対象を素早く絞り込み</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>3Dビューと同じデータをリアルタイムに共有</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>High / Critical / 未評価をワンクリック抽出</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="win-bar"><i></i><i></i><i></i></div>
+        <div style="padding:6px 10px 12px;">
+          <table class="mock-table">
+            <thead><tr><th>Asset</th><th>Interface</th><th>STRIDE</th><th>Risk</th></tr></thead>
+            <tbody>
+              <tr><td>Device key</td><td>Provisioning</td><td>Spoofing</td><td><span class="pill" style="color:var(--r-crit);background:rgba(217,70,239,0.12)">Critical</span></td></tr>
+              <tr><td>FW package</td><td>USB update</td><td>Tampering</td><td><span class="pill" style="color:var(--r-crit);background:rgba(217,70,239,0.12)">Critical</span></td></tr>
+              <tr><td>FW package</td><td>Network</td><td>DoS</td><td><span class="pill" style="color:var(--r-high);background:rgba(239,68,68,0.12)">High</span></td></tr>
+              <tr><td>Service cred</td><td>Maint. tool</td><td>Elevation</td><td><span class="pill" style="color:var(--r-high);background:rgba(239,68,68,0.12)">High</span></td></tr>
+              <tr><td>Patient meta</td><td>DICOM export</td><td>Info disc.</td><td><span class="pill" style="color:var(--r-high);background:rgba(239,68,68,0.12)">High</span></td></tr>
+              <tr><td>Audit log</td><td>Log export</td><td>Repudiation</td><td><span class="pill" style="color:var(--r-med);background:rgba(245,158,11,0.12)">Medium</span></td></tr>
+              <tr><td>SBOM</td><td>Compliance</td><td>Info disc.</td><td><span class="pill" style="color:var(--r-na);background:rgba(156,163,175,0.12)">未評価</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3: Export -->
+    <div class="feature reveal">
+      <div class="feature-text">
+        <div class="fnum">03 / EXPORT</div>
+        <h3>エクスポート</h3>
+        <p>分析結果は、伝わる形に。読みやすいMarkdownレポート、表計算に流せるCSV、そしてプロジェクト全体を保存・復元できるJSON。すべてブラウザ内で生成します。</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>High / Critical を要約した報告書を自動生成</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>JSONで保存したモデルをそのまま読み込み</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="win-bar"><i></i><i></i><i></i></div>
+        <div class="mock-export">
+          <div class="export-row"><span class="fmt">.md</span><span class="desc">読みやすい脅威レポート（要約＋詳細）</span><svg class="dl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
+          <div class="export-row"><span class="fmt">.csv</span><span class="desc">脅威セルのフラットテーブル</span><svg class="dl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
+          <div class="export-row"><span class="fmt">.json</span><span class="desc">プロジェクト全データ（保存・復元）</span><svg class="dl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DOMAINS ===================== -->
+<section class="block-tight" style="background:var(--bg-2);border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">BUILT FOR</span>
+      <h2>規制された組込みの世界へ。</h2>
+      <p>エンタープライズ脅威モデリングより軽く、Excelより構造的に。ThreatCubeはこうした領域のために設計されています。</p>
+    </div>
+    <div class="domains reveal" data-d="1">
+      <span class="domain-chip"><i style="background:var(--r-crit);color:var(--r-crit)"></i>組込み医療機器</span>
+      <span class="domain-chip"><i style="background:var(--r-high);color:var(--r-high)"></i>セキュアブート / 信頼の起点</span>
+      <span class="domain-chip"><i style="background:var(--r-med);color:var(--r-med)"></i>ファームウェア / コード署名</span>
+      <span class="domain-chip"><i style="background:var(--violet);color:var(--violet)"></i>製造プロビジョニング</span>
+      <span class="domain-chip"><i style="background:var(--r-low);color:var(--r-low)"></i>サービス保守ワークフロー</span>
+      <span class="domain-chip"><i style="background:var(--r-high);color:var(--r-high)"></i>PKI / HSM署名基盤</span>
+      <span class="domain-chip"><i style="background:var(--violet-bright);color:var(--violet-bright)"></i>製品セキュリティ全般</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LOCAL-FIRST ===================== -->
+<section class="block local" id="local">
+  <div class="local-glow"></div>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">PRIVACY BY DEFAULT</span>
+      <h2>データは、あなたの<br />ブラウザの中だけに。</h2>
+      <p>脅威モデルは、組織のもっとも機微な情報を含みます。ThreatCubeにはバックエンドがありません。すべてのデータはお使いのブラウザ内に保存され、外部に送信されることはありません。</p>
+    </div>
+    <div class="local-grid">
+      <div class="local-card reveal" data-d="1">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3l18 18M18 18H6a4 4 0 01-.9-7.9 5 5 0 019.2-2M21 16a4 4 0 00-1.3-3"/></svg></div>
+        <h3>サーバー送信なし</h3>
+        <p>クラウドにもAPIにも依存しません。ネットワークを切っても、脅威分析はそのまま続けられます。</p>
+      </div>
+      <div class="local-card reveal" data-d="2">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div>
+        <h3>ローカル保存</h3>
+        <p>ブラウザのIndexedDBに永続化。リロードしてもプロジェクトは消えず、すぐに再開できます。</p>
+      </div>
+      <div class="local-card reveal" data-d="3">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
+        <h3>自分の手で持ち運ぶ</h3>
+        <p>JSONでいつでもエクスポート / インポート。バックアップも共有も、ファイル1つで完結します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta" id="start">
+  <div class="cta-glow"></div>
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" style="justify-content:center;">SEE THREATS EXCEL CANNOT SHOW</span>
+      <h2 style="margin-top:20px;">重大な脅威から、<span class="grad">対処しはじめる。</span></h2>
+      <p>インストール不要。ブラウザで開けば、組込み医療機器のサンプルプロジェクトがすぐに立ち上がります。</p>
+      <div class="hero-cta">
+        <a href="#top" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+          ブラウザで開く
+        </a>
+        <a href="#features" class="btn btn-ghost">機能をもう一度見る</a>
+      </div>
+      <p class="note">無料 · ローカルファースト · アカウント登録なし</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#top"><img src="favicon.svg" alt="" />Threat<b>Cube</b></a>
+      <p class="tagline">See threats Excel cannot show. Visualize Asset × Interface × STRIDE risk in 3D.</p>
+      <p class="stack">React · Three.js · Zustand · Dexie.js (IndexedDB) · Tailwind</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#problem">課題</a>
+        <a href="#axes">3つの軸</a>
+        <a href="#features">機能</a>
+        <a href="#local">プライバシー</a>
+      </div>
+      <div class="footer-col">
+        <h4>Concept</h4>
+        <a href="#start">使ってみる</a>
+        <a href="#axes">STRIDEとは</a>
+        <a href="#features">エクスポート</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // nav shadow on scroll
+  const nav = document.getElementById("nav");
+  const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 24);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // scroll reveal
+  const io = new IntersectionObserver((ents) => {
+    ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+</script>
+<script type="module" src="hero-cube.js"></script>
+</body>
+</html>
