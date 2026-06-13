@@ -51,6 +51,40 @@ terminology consistent with the main app.
   smooth scroll (content stays visible); the hero clips its glow to avoid horizontal
   overflow; the cube degrades gracefully without WebGL.
 
+## Security
+
+GitHub Pages cannot send HTTP headers, so all hardening is delivered via `<meta>` in the
+head of `index.html`:
+
+- A **Content-Security-Policy** locks sources down: `default-src 'self'`; scripts only from
+  `'self'` + `https://unpkg.com` (Three.js); styles/fonts only from Google Fonts;
+  `object-src 'none'`, `base-uri 'self'`, `form-action 'none'`, `upgrade-insecure-requests`.
+- **Inline scripts are allowlisted by SHA-256 hash, not `'unsafe-inline'`.** Three inline
+  blocks are hashed: the `importmap`, the `application/ld+json` structured data, and the
+  nav/scroll-reveal script at the bottom. **If you edit any of them, the page breaks until
+  you recompute the hash.** Regenerate with the snippet below and update `script-src`:
+  ```sh
+  python3 - <<'PY'
+  import re, hashlib, base64
+  html = open('index.html').read()
+  for m in re.finditer(r'<script([^>]*)>(.*?)</script>', html, re.S):
+      if 'src=' in m.group(1): continue
+      print(m.group(1).strip() or '(plain)',
+            'sha256-'+base64.b64encode(hashlib.sha256(m.group(2).encode()).digest()).decode())
+  PY
+  ```
+- `style-src` keeps `'unsafe-inline'` because the markup relies on inline `style="…"`
+  attributes (CSP hashes/nonces cannot cover style *attributes*). Don't add inline event
+  handlers (`onclick=` etc.) — those would need the same exception for scripts and undo the
+  hardening.
+- `frame-ancestors`/`X-Frame-Options` (anti-clickjacking) are header-only and **cannot** be
+  set on GitHub Pages — don't re-add `frame-ancestors` to the meta CSP; it's silently
+  ignored and only emits a console error.
+- A `referrer` meta sets `strict-origin-when-cross-origin`.
+
+After any change touching the head or those scripts, serve over HTTP and confirm the
+browser console shows **no CSP violations** and the hero cube still renders.
+
 ## Deploy
 
 Push to the default branch → GitHub Pages publishes. `CNAME` binds the custom domain,

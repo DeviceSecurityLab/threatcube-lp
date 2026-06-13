@@ -3,6 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Security: CSP must stay near the top of <head>, before any resource is fetched.
+     GitHub Pages cannot send HTTP headers, so these meta tags are the only delivery
+     channel. Inline scripts are allowlisted by SHA-256 hash (no 'unsafe-inline' for
+     script-src). If you edit any inline <script> (importmap, JSON-LD, or the nav/reveal
+     block at the bottom), recompute its hash and update script-src below, or the page
+     will break. style-src keeps 'unsafe-inline' because the markup relies on inline
+     style="" attributes, which hashes cannot cover. Note: frame-ancestors and
+     X-Frame-Options can only be sent as HTTP headers, which GitHub Pages does not
+     support, so clickjacking cannot be blocked from here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; img-src 'self' data:; font-src https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://unpkg.com 'sha256-/hYrs5q32udnlGMoi0dehK7MezyVh5NVU8DpWP21Znc=' 'sha256-6ZP+c260aRQ5q6MdzTqXFT1UvjnuvOr5Hqbb8JGNpEE=' 'sha256-JTrm53B+/zkE8EjHWzfEFLVzPG25i1zf1w3q5lfdMB0='; connect-src 'self'; upgrade-insecure-requests" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>ThreatCube — Excelには映らない脅威を、立体で見る。</title>
 <meta name="description" content="Asset × Surface × STRIDE のリスクを回転する3Dキューブで可視化する、ローカルファーストの脅威モデリングワークスペース。組込み・製品セキュリティのためのSTRIDE脅威モデリング。" />
 <meta name="keywords" content="脅威モデリング, STRIDE, ThreatCube, セキュリティ, 組込み, 製品セキュリティ, threat modeling, ローカルファースト, リスク可視化" />
